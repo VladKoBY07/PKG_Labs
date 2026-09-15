@@ -1,31 +1,660 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ColorConverter</class>
+
  <widget class="QMainWindow" name="ColorConverter">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1200</width>
+    <height>760</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>ColorConverter</string>
+
+  <property name="minimumSize">
+   <size>
+    <width>1000</width>
+    <height>650</height>
+   </size>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
+
+  <property name="windowTitle">
+   <string>Конвертер цветов: HLS, XYZ, LAB</string>
+  </property>
+
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>12</number>
+    </property>
+
+    <property name="leftMargin">
+     <number>12</number>
+    </property>
+
+    <property name="topMargin">
+     <number>12</number>
+    </property>
+
+    <property name="rightMargin">
+     <number>12</number>
+    </property>
+
+    <property name="bottomMargin">
+     <number>12</number>
+    </property>
+
+    <!-- Верхняя часть окна -->
+
+    <item>
+     <layout class="QHBoxLayout" name="topLayout">
+      <property name="spacing">
+       <number>12</number>
+      </property>
+
+      <!-- Предпросмотр цвета -->
+
+      <item>
+       <widget class="QGroupBox" name="previewGroup">
+        <property name="minimumSize">
+         <size>
+          <width>260</width>
+          <height>270</height>
+         </size>
+        </property>
+
+        <property name="title">
+         <string>Текущий цвет</string>
+        </property>
+
+        <layout class="QVBoxLayout" name="previewLayout">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+
+         <item>
+          <widget class="QLabel" name="colorPreview">
+           <property name="minimumSize">
+            <size>
+             <width>220</width>
+             <height>180</height>
+            </size>
+           </property>
+
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>1</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+
+           <property name="styleSheet">
+            <string notr="true">background-color: #ff0000;
+border: 2px solid #555555;
+border-radius: 4px;</string>
+           </property>
+
+           <property name="text">
+            <string/>
+           </property>
+
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+
+         <item>
+          <widget class="QLabel" name="gamutWarningLabel">
+           <property name="minimumSize">
+            <size>
+             <width>220</width>
+             <height>35</height>
+            </size>
+           </property>
+
+           <property name="styleSheet">
+            <string notr="true">color: #c62828;
+font-weight: bold;</string>
+           </property>
+
+           <property name="text">
+            <string/>
+           </property>
+
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QGroupBox" name="mapGroup">
+        <property name="title">
+         <string>Карта цвета</string>
+        </property>
+
+        <layout class="QVBoxLayout" name="mapLayout">
+         <item>
+          <widget class="QWidget" name="colorMap">
+           <property name="minimumSize">
+            <size>
+             <width>380</width>
+             <height>240</height>
+            </size>
+           </property>
+
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>1</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+
+    <item>
+     <layout class="QHBoxLayout" name="modelsLayout">
+      <property name="spacing">
+       <number>12</number>
+      </property>
+
+      <item>
+       <widget class="QGroupBox" name="hlsGroup">
+        <property name="title">
+         <string>HLS</string>
+        </property>
+
+        <layout class="QVBoxLayout" name="hlsLayout">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+
+         <item>
+          <layout class="QHBoxLayout" name="hLayout">
+           <item>
+            <widget class="QLabel" name="hLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>H</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="hSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="hSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <layout class="QHBoxLayout" name="lLayout">
+           <item>
+            <widget class="QLabel" name="lLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>L</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="lSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="lSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <layout class="QHBoxLayout" name="sLayout">
+           <item>
+            <widget class="QLabel" name="sLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>S</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="sSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="sSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <spacer name="hlsSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QGroupBox" name="xyzGroup">
+        <property name="title">
+         <string>XYZ</string>
+        </property>
+
+        <layout class="QVBoxLayout" name="xyzLayout">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+
+         <item>
+          <layout class="QHBoxLayout" name="xLayout">
+           <item>
+            <widget class="QLabel" name="xLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>X</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="xSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="xSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>4</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <layout class="QHBoxLayout" name="yLayout">
+           <item>
+            <widget class="QLabel" name="yLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>Y</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="ySlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="ySpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>4</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <layout class="QHBoxLayout" name="zLayout">
+           <item>
+            <widget class="QLabel" name="zLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>Z</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="zSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="zSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>4</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <spacer name="xyzSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QGroupBox" name="labGroup">
+        <property name="title">
+         <string>LAB</string>
+        </property>
+
+        <layout class="QVBoxLayout" name="labLayout">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+
+         <item>
+          <layout class="QHBoxLayout" name="labLLayout">
+           <item>
+            <widget class="QLabel" name="labLLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>L*</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="labLSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="labLSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <layout class="QHBoxLayout" name="aLayout">
+           <item>
+            <widget class="QLabel" name="aLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>a*</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="aSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="aSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <layout class="QHBoxLayout" name="labBLayout">
+           <item>
+            <widget class="QLabel" name="labBLabel">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="text">
+              <string>b*</string>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QSlider" name="labBSlider">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+
+           <item>
+            <widget class="QDoubleSpinBox" name="labBSpinBox">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+
+             <property name="decimals">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <item>
+          <spacer name="labSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+
+  <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1200</width>
      <height>25</height>
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
+
  <resources/>
  <connections/>
 </ui>
