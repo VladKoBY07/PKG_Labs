@@ -1,5 +1,6 @@
 #include "colorconverter.h"
 #include "ui_colorconverter.h"
+#include "colormath.h"
 
 #include <QColor>
 #include <QDoubleSpinBox>
@@ -9,8 +10,10 @@
 #include <QPainter>
 #include <QSignalBlocker>
 #include <QSlider>
+#include <QRect>
+#include <QPoint>
+#include <QPen>
 
-#include <algorithm>
 #include <cmath>
 
 ColorConverter::ColorConverter(QWidget *parent)
@@ -38,15 +41,9 @@ ColorConverter::ColorConverter(QWidget *parent)
     Xyz xyz = rgbToXyz(r, g, b);
     Lab lab = xyzToLab(xyz);
 
-    const bool outOfGamut =
-        !isRgbInGamut(r, g, b);
+    const bool outOfGamut = !isRgbInGamut(r, g, b);
 
-    updateAllColors(
-        hls,
-        xyz,
-        lab,
-        outOfGamut
-        );
+    updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
 ColorConverter::~ColorConverter()
@@ -136,203 +133,125 @@ void ColorConverter::setupConnections()
 {
     // HLS
     connect(
-        ui->hSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onHlsSliderChanged
+        ui->hSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onHlsSliderChanged
         );
 
     connect(
-        ui->lSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onHlsSliderChanged
+        ui->lSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onHlsSliderChanged
         );
 
     connect(
-        ui->sSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onHlsSliderChanged
+        ui->sSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onHlsSliderChanged
         );
 
     connect(
-        ui->hSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onHlsSpinBoxChanged
+        ui->hSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onHlsSpinBoxChanged
         );
 
     connect(
-        ui->lSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onHlsSpinBoxChanged
+        ui->lSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onHlsSpinBoxChanged
         );
 
     connect(
-        ui->sSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onHlsSpinBoxChanged
+        ui->sSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onHlsSpinBoxChanged
         );
 
     // XYZ
     connect(
-        ui->xSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onXyzSliderChanged
+        ui->xSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onXyzSliderChanged
         );
 
     connect(
-        ui->ySlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onXyzSliderChanged
+        ui->ySlider, &QSlider::valueChanged,
+        this, &ColorConverter::onXyzSliderChanged
         );
 
     connect(
-        ui->zSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onXyzSliderChanged
+        ui->zSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onXyzSliderChanged
         );
 
     connect(
-        ui->xSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onXyzSpinBoxChanged
+        ui->xSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onXyzSpinBoxChanged
         );
 
     connect(
-        ui->ySpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onXyzSpinBoxChanged
+        ui->ySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onXyzSpinBoxChanged
         );
 
     connect(
-        ui->zSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onXyzSpinBoxChanged
+        ui->zSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onXyzSpinBoxChanged
         );
 
     // LAB
     connect(
-        ui->labLSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onLabSliderChanged
+        ui->labLSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onLabSliderChanged
         );
 
     connect(
-        ui->aSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onLabSliderChanged
+        ui->aSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onLabSliderChanged
         );
 
     connect(
-        ui->labBSlider,
-        &QSlider::valueChanged,
-        this,
-        &ColorConverter::onLabSliderChanged
+        ui->labBSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onLabSliderChanged
         );
 
     connect(
-        ui->labLSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onLabSpinBoxChanged
+        ui->labLSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onLabSpinBoxChanged
         );
 
     connect(
-        ui->aSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onLabSpinBoxChanged
+        ui->aSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onLabSpinBoxChanged
         );
 
     connect(
-        ui->labBSpinBox,
-        QOverload<double>::of(
-            &QDoubleSpinBox::valueChanged
-            ),
-        this,
-        &ColorConverter::onLabSpinBoxChanged
+        ui->labBSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onLabSpinBoxChanged
         );
 }
 
-bool ColorConverter::eventFilter(
-    QObject *watched,
-    QEvent *event
-    )
+bool ColorConverter::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched != ui->colorMap) {
-        return QMainWindow::eventFilter(
-            watched,
-            event
-            );
+        return QMainWindow::eventFilter(watched, event);
     }
 
     if (event->type() == QEvent::Paint) {
         QPainter painter(ui->colorMap);
         painter.setRenderHint(QPainter::Antialiasing);
 
-        const QRect rect =
-            ui->colorMap->rect();
+        const QRect rect = ui->colorMap->rect();
 
-        if (rect.width() <= 1 ||
-            rect.height() <= 1) {
+        if (rect.width() <= 1 || rect.height() <= 1) {
             return true;
         }
 
-        QImage image(
-            rect.size(),
-            QImage::Format_RGB32
-            );
+        QImage image(rect.size(), QImage::Format_RGB32);
 
-        for (int y = 0;
-             y < image.height();
-             ++y) {
+        for (int y = 0; y < image.height(); ++y) {
             const double lightness =
-                1.0 -
-                y /
-                    static_cast<double>(
-                        image.height() - 1
-                        );
+                1.0 - y / static_cast<double>(image.height() - 1);
 
-            for (int x = 0;
-                 x < image.width();
-                 ++x) {
+            for (int x = 0; x < image.width(); ++x) {
                 const double hue =
-                    x /
-                    static_cast<double>(
-                        image.width() - 1
-                        ) *
-                    360.0;
+                    x / static_cast<double>(image.width() - 1) * 360.0;
 
                 Hls hls;
-
                 hls.h = hue;
                 hls.l = lightness;
                 hls.s = 1.0;
@@ -341,12 +260,7 @@ bool ColorConverter::eventFilter(
                 double g = 0.0;
                 double b = 0.0;
 
-                hlsToRgb(
-                    hls,
-                    r,
-                    g,
-                    b
-                    );
+                hlsToRgb(hls, r, g, b);
 
                 QColor color;
 
@@ -360,150 +274,71 @@ bool ColorConverter::eventFilter(
                     color = QColor(150, 150, 150);
                 }
 
-                image.setPixelColor(
-                    x,
-                    y,
-                    color
-                    );
+                image.setPixelColor(x, y, color);
             }
         }
 
-        painter.drawImage(
-            rect,
-            image
+        painter.drawImage(rect, image);
+
+        painter.setPen(QPen(Qt::black, 2));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRect(rect.adjusted(1, 1, -1, -1));
+
+        int markerX = static_cast<int>(
+            m_currentHls.h / 360.0 * rect.width()
             );
 
-        painter.setPen(
-            QPen(Qt::black, 2)
+        int markerY = static_cast<int>(
+            (1.0 - m_currentHls.l) * rect.height()
             );
 
-        painter.setBrush(
-            Qt::NoBrush
-            );
+        if (markerX < 0) markerX = 0;
+        if (markerX >= rect.width()) markerX = rect.width() - 1;
+        if (markerY < 0) markerY = 0;
+        if (markerY >= rect.height()) markerY = rect.height() - 1;
 
-        painter.drawRect(
-            rect.adjusted(
-                1,
-                1,
-                -1,
-                -1
-                )
-            );
+        painter.setPen(QPen(Qt::white, 3));
+        painter.drawEllipse(QPoint(markerX, markerY), 8, 8);
 
-        int markerX =
-            static_cast<int>(
-                m_currentHls.h /
-                360.0 *
-                rect.width()
-                );
-
-        int markerY =
-            static_cast<int>(
-                (1.0 - m_currentHls.l) *
-                rect.height()
-                );
-
-        if (markerX < 0) {
-            markerX = 0;
-        }
-
-        if (markerX >= rect.width()) {
-            markerX = rect.width() - 1;
-        }
-
-        if (markerY < 0) {
-            markerY = 0;
-        }
-
-        if (markerY >= rect.height()) {
-            markerY = rect.height() - 1;
-        }
-
-        painter.setPen(
-            QPen(Qt::white, 3)
-            );
-
-        painter.drawEllipse(
-            QPoint(markerX, markerY),
-            8,
-            8
-            );
-
-        painter.setPen(
-            QPen(Qt::black, 1)
-            );
-
-        painter.drawEllipse(
-            QPoint(markerX, markerY),
-            8,
-            8
-            );
+        painter.setPen(QPen(Qt::black, 1));
+        painter.drawEllipse(QPoint(markerX, markerY), 8, 8);
 
         return true;
     }
 
-    if (event->type() ==
-            QEvent::MouseButtonPress ||
-        event->type() ==
-            QEvent::MouseMove) {
-        auto *mouseEvent =
-            static_cast<QMouseEvent *>(
-                event
-                );
+    if (event->type() == QEvent::MouseButtonPress ||
+        event->type() == QEvent::MouseMove) {
+        auto *mouseEvent = static_cast<QMouseEvent *>(event);
 
         const bool leftButtonPressed =
-            mouseEvent->button() ==
-                Qt::LeftButton ||
-            mouseEvent->buttons().testFlag(
-                Qt::LeftButton
-                );
+            mouseEvent->button() == Qt::LeftButton ||
+            mouseEvent->buttons().testFlag(Qt::LeftButton);
 
         if (!leftButtonPressed) {
             return true;
         }
 
-        const QRect rect =
-            ui->colorMap->rect();
+        const QRect rect = ui->colorMap->rect();
 
-        if (rect.width() <= 0 ||
-            rect.height() <= 0) {
+        if (rect.width() <= 0 || rect.height() <= 0) {
             return true;
         }
 
-        double x =
-            mouseEvent->position().x();
+        double x = mouseEvent->position().x();
+        double y = mouseEvent->position().y();
 
-        double y =
-            mouseEvent->position().y();
-
-        if (x < 0.0) {
-            x = 0.0;
-        }
-
-        if (x > rect.width()) {
-            x = rect.width();
-        }
-
-        if (y < 0.0) {
-            y = 0.0;
-        }
-
-        if (y > rect.height()) {
-            y = rect.height();
-        }
+        if (x < 0.0) x = 0.0;
+        if (x > rect.width()) x = rect.width();
+        if (y < 0.0) y = 0.0;
+        if (y > rect.height()) y = rect.height();
 
         const double hue =
-            x /
-            static_cast<double>(rect.width()) *
-            360.0;
+            x / static_cast<double>(rect.width()) * 360.0;
 
         const double lightness =
-            1.0 -
-            y /
-                static_cast<double>(rect.height());
+            1.0 - y / static_cast<double>(rect.height());
 
         Hls hls;
-
         hls.h = hue;
         hls.l = lightness;
         hls.s = 1.0;
@@ -512,46 +347,19 @@ bool ColorConverter::eventFilter(
         double g = 0.0;
         double b = 0.0;
 
-        hlsToRgb(
-            hls,
-            r,
-            g,
-            b
-            );
+        hlsToRgb(hls, r, g, b);
 
-        Xyz xyz =
-            rgbToXyz(
-                r,
-                g,
-                b
-                );
+        Xyz xyz = rgbToXyz(r, g, b);
+        Lab lab = xyzToLab(xyz);
 
-        Lab lab =
-            xyzToLab(
-                xyz
-                );
+        const bool outOfGamut = !isRgbInGamut(r, g, b);
 
-        const bool outOfGamut =
-            !isRgbInGamut(
-                r,
-                g,
-                b
-                );
-
-        updateAllColors(
-            hls,
-            xyz,
-            lab,
-            outOfGamut
-            );
+        updateAllColors(hls, xyz, lab, outOfGamut);
 
         return true;
     }
 
-    return QMainWindow::eventFilter(
-        watched,
-        event
-        );
+    return QMainWindow::eventFilter(watched, event);
 }
 
 void ColorConverter::onHlsSliderChanged()
@@ -562,65 +370,22 @@ void ColorConverter::onHlsSliderChanged()
 
     Hls hls;
 
-    hls.h =
-        coordinateFromSlider(
-            ui->hSlider,
-            0.0,
-            360.0
-            );
-
-    hls.l =
-        coordinateFromSlider(
-            ui->lSlider,
-            0.0,
-            100.0
-            ) /
-        100.0;
-
-    hls.s =
-        coordinateFromSlider(
-            ui->sSlider,
-            0.0,
-            100.0
-            ) /
-        100.0;
+    hls.h = coordinateFromSlider(ui->hSlider, 0.0, 360.0);
+    hls.l = coordinateFromSlider(ui->lSlider, 0.0, 100.0) / 100.0;
+    hls.s = coordinateFromSlider(ui->sSlider, 0.0, 100.0) / 100.0;
 
     double r = 0.0;
     double g = 0.0;
     double b = 0.0;
 
-    hlsToRgb(
-        hls,
-        r,
-        g,
-        b
-        );
+    hlsToRgb(hls, r, g, b);
 
-    Xyz xyz =
-        rgbToXyz(
-            r,
-            g,
-            b
-            );
+    Xyz xyz = rgbToXyz(r, g, b);
+    Lab lab = xyzToLab(xyz);
 
-    Lab lab =
-        xyzToLab(
-            xyz
-            );
+    const bool outOfGamut = !isRgbInGamut(r, g, b);
 
-    const bool outOfGamut =
-        !isRgbInGamut(
-            r,
-            g,
-            b
-            );
-
-    updateAllColors(
-        hls,
-        xyz,
-        lab,
-        outOfGamut
-        );
+    updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
 void ColorConverter::onHlsSpinBoxChanged()
@@ -629,45 +394,20 @@ void ColorConverter::onHlsSpinBoxChanged()
         return;
     }
 
-    const Hls hls =
-        hlsFromControls();
+    const Hls hls = hlsFromControls();
 
     double r = 0.0;
     double g = 0.0;
     double b = 0.0;
 
-    hlsToRgb(
-        hls,
-        r,
-        g,
-        b
-        );
+    hlsToRgb(hls, r, g, b);
 
-    Xyz xyz =
-        rgbToXyz(
-            r,
-            g,
-            b
-            );
+    Xyz xyz = rgbToXyz(r, g, b);
+    Lab lab = xyzToLab(xyz);
 
-    Lab lab =
-        xyzToLab(
-            xyz
-            );
+    const bool outOfGamut = !isRgbInGamut(r, g, b);
 
-    const bool outOfGamut =
-        !isRgbInGamut(
-            r,
-            g,
-            b
-            );
-
-    updateAllColors(
-        hls,
-        xyz,
-        lab,
-        outOfGamut
-        );
+    updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
 void ColorConverter::onXyzSliderChanged()
@@ -678,59 +418,21 @@ void ColorConverter::onXyzSliderChanged()
 
     Xyz xyz;
 
-    xyz.x =
-        coordinateFromSlider(
-            ui->xSlider,
-            0.0,
-            100.0
-            );
-
-    xyz.y =
-        coordinateFromSlider(
-            ui->ySlider,
-            0.0,
-            100.0
-            );
-
-    xyz.z =
-        coordinateFromSlider(
-            ui->zSlider,
-            0.0,
-            100.0
-            );
+    xyz.x = coordinateFromSlider(ui->xSlider, 0.0, 100.0);
+    xyz.y = coordinateFromSlider(ui->ySlider, 0.0, 100.0);
+    xyz.z = coordinateFromSlider(ui->zSlider, 0.0, 100.0);
 
     double r = 0.0;
     double g = 0.0;
     double b = 0.0;
 
-    xyzToRgb(
-        xyz,
-        r,
-        g,
-        b
-        );
+    xyzToRgb(xyz, r, g, b);
 
-    bool outOfGamut = false;
+    const bool outOfGamut = !isRgbInGamut(r, g, b);
+    Hls hls = rgbToHls(r, g, b);
+    Lab lab = xyzToLab(xyz);
 
-    Hls hls =
-        rgbToDisplayHls(
-            r,
-            g,
-            b,
-            outOfGamut
-            );
-
-    Lab lab =
-        xyzToLab(
-            xyz
-            );
-
-    updateAllColors(
-        hls,
-        xyz,
-        lab,
-        outOfGamut
-        );
+    updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
 void ColorConverter::onXyzSpinBoxChanged()
@@ -739,41 +441,19 @@ void ColorConverter::onXyzSpinBoxChanged()
         return;
     }
 
-    const Xyz xyz =
-        xyzFromControls();
+    const Xyz xyz = xyzFromControls();
 
     double r = 0.0;
     double g = 0.0;
     double b = 0.0;
 
-    xyzToRgb(
-        xyz,
-        r,
-        g,
-        b
-        );
+    xyzToRgb(xyz, r, g, b);
 
-    bool outOfGamut = false;
+    const bool outOfGamut = !isRgbInGamut(r, g, b);
+    Hls hls = rgbToHls(r, g, b);
+    Lab lab = xyzToLab(xyz);
 
-    Hls hls =
-        rgbToDisplayHls(
-            r,
-            g,
-            b,
-            outOfGamut
-            );
-
-    Lab lab =
-        xyzToLab(
-            xyz
-            );
-
-    updateAllColors(
-        hls,
-        xyz,
-        lab,
-        outOfGamut
-        );
+    updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
 void ColorConverter::onLabSliderChanged()
@@ -784,59 +464,22 @@ void ColorConverter::onLabSliderChanged()
 
     Lab lab;
 
-    lab.l =
-        coordinateFromSlider(
-            ui->labLSlider,
-            0.0,
-            100.0
-            );
+    lab.l = coordinateFromSlider(ui->labLSlider, 0.0, 100.0);
+    lab.a = coordinateFromSlider(ui->aSlider, -200.0, 200.0);
+    lab.b = coordinateFromSlider(ui->labBSlider, -200.0, 200.0);
 
-    lab.a =
-        coordinateFromSlider(
-            ui->aSlider,
-            -200.0,
-            200.0
-            );
-
-    lab.b =
-        coordinateFromSlider(
-            ui->labBSlider,
-            -200.0,
-            200.0
-            );
-
-    Xyz xyz =
-        labToXyz(
-            lab
-            );
+    Xyz xyz = labToXyz(lab);
 
     double r = 0.0;
     double g = 0.0;
     double b = 0.0;
 
-    xyzToRgb(
-        xyz,
-        r,
-        g,
-        b
-        );
+    xyzToRgb(xyz, r, g, b);
 
-    bool outOfGamut = false;
+    const bool outOfGamut = !isRgbInGamut(r, g, b);
+    Hls hls = rgbToHls(r, g, b);
 
-    Hls hls =
-        rgbToDisplayHls(
-            r,
-            g,
-            b,
-            outOfGamut
-            );
-
-    updateAllColors(
-        hls,
-        xyz,
-        lab,
-        outOfGamut
-        );
+    updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
 void ColorConverter::onLabSpinBoxChanged()
@@ -845,41 +488,20 @@ void ColorConverter::onLabSpinBoxChanged()
         return;
     }
 
-    const Lab lab =
-        labFromControls();
+    const Lab lab = labFromControls();
 
-    Xyz xyz =
-        labToXyz(
-            lab
-            );
+    Xyz xyz = labToXyz(lab);
 
     double r = 0.0;
     double g = 0.0;
     double b = 0.0;
 
-    xyzToRgb(
-        xyz,
-        r,
-        g,
-        b
-        );
+    xyzToRgb(xyz, r, g, b);
 
-    bool outOfGamut = false;
+    const bool outOfGamut = !isRgbInGamut(r, g, b);
+    Hls hls = rgbToHls(r, g, b);
 
-    Hls hls =
-        rgbToDisplayHls(
-            r,
-            g,
-            b,
-            outOfGamut
-            );
-
-    updateAllColors(
-        hls,
-        xyz,
-        lab,
-        outOfGamut
-        );
+    updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
 void ColorConverter::updateAllColors(
@@ -890,60 +512,33 @@ void ColorConverter::updateAllColors(
     )
 {
     m_updating = true;
-
     m_currentHls = hls;
 
     QColor color;
 
     if (outOfGamut) {
-        color =
-            QColor(
-                150,
-                150,
-                150
-                );
+        color = QColor(150, 150, 150);
     } else {
-        color =
-            hlsToQColor(
-                hls
-                );
+        color = hlsToQColor(hls);
     }
 
-    updatePreview(
-        color,
-        outOfGamut
-        );
-
-    setHlsControls(
-        hls
-        );
-
-    setXyzControls(
-        xyz
-        );
-
-    setLabControls(
-        lab
-        );
-
+    updatePreview(color, outOfGamut);
+    setHlsControls(hls);
+    setXyzControls(xyz);
+    setLabControls(lab);
     updateColorMap();
 
     m_updating = false;
 }
 
-void ColorConverter::updatePreview(
-    const QColor &color,
-    bool outOfGamut
-    )
+void ColorConverter::updatePreview(const QColor &color, bool outOfGamut)
 {
     ui->colorPreview->setStyleSheet(
         QString(
             "background-color: %1;"
             "border: 2px solid #555555;"
             "border-radius: 4px;"
-            ).arg(
-                color.name()
-                )
+            ).arg(color.name())
         );
 
     if (outOfGamut) {
@@ -958,10 +553,7 @@ void ColorConverter::updatePreview(
             );
     } else {
         ui->gamutWarningLabel->clear();
-
-        ui->gamutWarningLabel->setStyleSheet(
-            QString()
-            );
+        ui->gamutWarningLabel->setStyleSheet(QString());
     }
 }
 
@@ -978,35 +570,17 @@ void ColorConverter::setCoordinate(
     double maximum
     )
 {
-    if (!std::isfinite(value) ||
-        value < minimum ||
-        value > maximum) {
+    if (!std::isfinite(value) || value < minimum || value > maximum) {
         return;
     }
 
-    const QSignalBlocker sliderBlocker(
-        slider
-        );
+    const QSignalBlocker sliderBlocker(slider);
+    const QSignalBlocker spinBoxBlocker(spinBox);
 
-    const QSignalBlocker spinBoxBlocker(
-        spinBox
-        );
+    const double ratio = (value - minimum) / (maximum - minimum);
 
-    const double ratio =
-        (value - minimum) /
-        (maximum - minimum);
-
-    slider->setValue(
-        static_cast<int>(
-            std::round(
-                ratio * 1000.0
-                )
-            )
-        );
-
-    spinBox->setValue(
-        value
-        );
+    slider->setValue(static_cast<int>(std::round(ratio * 1000.0)));
+    spinBox->setValue(value);
 }
 
 double ColorConverter::coordinateFromSlider(
@@ -1015,480 +589,73 @@ double ColorConverter::coordinateFromSlider(
     double maximum
     ) const
 {
-    const double ratio =
-        slider->value() /
-        1000.0;
-
-    return minimum +
-           ratio *
-               (maximum - minimum);
+    const double ratio = slider->value() / 1000.0;
+    return minimum + ratio * (maximum - minimum);
 }
 
-void ColorConverter::setHlsControls(
-    const Hls &hls
-    )
+void ColorConverter::setHlsControls(const Hls &hls)
 {
-    setCoordinate(
-        ui->hSlider,
-        ui->hSpinBox,
-        hls.h,
-        0.0,
-        360.0
-        );
-
-    setCoordinate(
-        ui->lSlider,
-        ui->lSpinBox,
-        hls.l * 100.0,
-        0.0,
-        100.0
-        );
-
-    setCoordinate(
-        ui->sSlider,
-        ui->sSpinBox,
-        hls.s * 100.0,
-        0.0,
-        100.0
-        );
+    setCoordinate(ui->hSlider, ui->hSpinBox, hls.h, 0.0, 360.0);
+    setCoordinate(ui->lSlider, ui->lSpinBox, hls.l * 100.0, 0.0, 100.0);
+    setCoordinate(ui->sSlider, ui->sSpinBox, hls.s * 100.0, 0.0, 100.0);
 }
 
-void ColorConverter::setXyzControls(
-    const Xyz &xyz
-    )
+void ColorConverter::setXyzControls(const Xyz &xyz)
 {
-    setCoordinate(
-        ui->xSlider,
-        ui->xSpinBox,
-        xyz.x,
-        0.0,
-        100.0
-        );
-
-    setCoordinate(
-        ui->ySlider,
-        ui->ySpinBox,
-        xyz.y,
-        0.0,
-        100.0
-        );
-
-    setCoordinate(
-        ui->zSlider,
-        ui->zSpinBox,
-        xyz.z,
-        0.0,
-        100.0
-        );
+    setCoordinate(ui->xSlider, ui->xSpinBox, xyz.x, 0.0, 100.0);
+    setCoordinate(ui->ySlider, ui->ySpinBox, xyz.y, 0.0, 100.0);
+    setCoordinate(ui->zSlider, ui->zSpinBox, xyz.z, 0.0, 100.0);
 }
 
-void ColorConverter::setLabControls(
-    const Lab &lab
-    )
+void ColorConverter::setLabControls(const Lab &lab)
 {
-    setCoordinate(
-        ui->labLSlider,
-        ui->labLSpinBox,
-        lab.l,
-        0.0,
-        100.0
-        );
-
-    setCoordinate(
-        ui->aSlider,
-        ui->aSpinBox,
-        lab.a,
-        -200.0,
-        200.0
-        );
-
-    setCoordinate(
-        ui->labBSlider,
-        ui->labBSpinBox,
-        lab.b,
-        -200.0,
-        200.0
-        );
+    setCoordinate(ui->labLSlider, ui->labLSpinBox, lab.l, 0.0, 100.0);
+    setCoordinate(ui->aSlider, ui->aSpinBox, lab.a, -200.0, 200.0);
+    setCoordinate(ui->labBSlider, ui->labBSpinBox, lab.b, -200.0, 200.0);
 }
 
-ColorConverter::Hls
-ColorConverter::hlsFromControls() const
+Hls ColorConverter::hlsFromControls() const
 {
     Hls hls;
-
-    hls.h =
-        ui->hSpinBox->value();
-
-    hls.l =
-        ui->lSpinBox->value() /
-        100.0;
-
-    hls.s =
-        ui->sSpinBox->value() /
-        100.0;
-
+    hls.h = ui->hSpinBox->value();
+    hls.l = ui->lSpinBox->value() / 100.0;
+    hls.s = ui->sSpinBox->value() / 100.0;
     return hls;
 }
 
-ColorConverter::Xyz
-ColorConverter::xyzFromControls() const
+Xyz ColorConverter::xyzFromControls() const
 {
     Xyz xyz;
-
-    xyz.x =
-        ui->xSpinBox->value();
-
-    xyz.y =
-        ui->ySpinBox->value();
-
-    xyz.z =
-        ui->zSpinBox->value();
-
+    xyz.x = ui->xSpinBox->value();
+    xyz.y = ui->ySpinBox->value();
+    xyz.z = ui->zSpinBox->value();
     return xyz;
 }
 
-ColorConverter::Lab
-ColorConverter::labFromControls() const
+Lab ColorConverter::labFromControls() const
 {
     Lab lab;
-
-    lab.l =
-        ui->labLSpinBox->value();
-
-    lab.a =
-        ui->aSpinBox->value();
-
-    lab.b =
-        ui->labBSpinBox->value();
-
+    lab.l = ui->labLSpinBox->value();
+    lab.a = ui->aSpinBox->value();
+    lab.b = ui->labBSpinBox->value();
     return lab;
 }
 
-QColor ColorConverter::hlsToQColor(
-    const Hls &hls
-    ) const
+QColor ColorConverter::hlsToQColor(const Hls &hls) const
 {
     double r = 0.0;
     double g = 0.0;
     double b = 0.0;
 
-    hlsToRgb(
-        hls,
-        r,
-        g,
-        b
-        );
+    hlsToRgb(hls, r, g, b);
 
     if (!isRgbInGamut(r, g, b)) {
-        return QColor(
-            150,
-            150,
-            150
-            );
+        return QColor(150, 150, 150);
     }
 
     return QColor::fromRgb(
-        static_cast<int>(
-            std::round(r)
-            ),
-        static_cast<int>(
-            std::round(g)
-            ),
-        static_cast<int>(
-            std::round(b)
-            )
+        static_cast<int>(std::round(r)),
+        static_cast<int>(std::round(g)),
+        static_cast<int>(std::round(b))
         );
-}
-
-bool ColorConverter::isRgbInGamut(
-    double r,
-    double g,
-    double b
-    ) const
-{
-    constexpr double epsilon = 1e-9;
-
-    return std::isfinite(r) &&
-           std::isfinite(g) &&
-           std::isfinite(b) &&
-           r >= -epsilon &&
-           r <= 255.0 + epsilon &&
-           g >= -epsilon &&
-           g <= 255.0 + epsilon &&
-           b >= -epsilon &&
-           b <= 255.0 + epsilon;
-}
-
-ColorConverter::Hls
-ColorConverter::rgbToDisplayHls(
-    double r,
-    double g,
-    double b,
-    bool &outOfGamut
-    ) const
-{
-    outOfGamut = !isRgbInGamut(r, g, b);
-
-    return rgbToHls(r, g, b);
-}
-
-ColorConverter::Hls
-ColorConverter::rgbToHls(
-    double r,
-    double g,
-    double b
-    ) const
-{
-    r /= 255.0;
-    g /= 255.0;
-    b /= 255.0;
-
-    const double maximum =
-        std::max({r, g, b});
-
-    const double minimum =
-        std::min({r, g, b});
-
-    const double difference =
-        maximum - minimum;
-
-    Hls hls;
-
-    hls.l =
-        (maximum + minimum) / 2.0;
-
-    if (difference == 0.0) {
-        hls.h = 0.0;
-        hls.s = 0.0;
-        return hls;
-    }
-
-    if (hls.l <= 0.5) {
-        hls.s =
-            difference /
-            (maximum + minimum);
-    } else {
-        hls.s =
-            difference /
-            (2.0 - maximum - minimum);
-    }
-
-    if (maximum == r) {
-        hls.h =
-            60.0 *
-            std::fmod(
-                (g - b) / difference,
-                6.0
-                );
-    } else if (maximum == g) {
-        hls.h =
-            60.0 *
-            ((b - r) / difference + 2.0);
-    } else {
-        hls.h =
-            60.0 *
-            ((r - g) / difference + 4.0);
-    }
-
-    if (hls.h < 0.0) {
-        hls.h += 360.0;
-    }
-
-    return hls;
-}
-
-// HLS -> RGB
-
-static double Value(double hue, double m1, double m2){
-    while (hue < 0.0)
-        hue += 360.0;
-    while (hue >= 360.0)
-        hue -= 360.0;
-
-    if(hue < 60.0){
-        return m1 + (m2 - m1) * hue / 60.0;
-    }
-    if(hue < 180.0){
-        return m2;
-    }
-    if(hue < 240.0){
-        return m1 + (m2 - m1)*(240.0 - hue) / 60;
-    }
-    return m1;
-}
-
-void ColorConverter::hlsToRgb(
-    const Hls &hls,
-    double &r,
-    double &g,
-    double &b
-    ) const
-{
-    double h = hls.h;
-    double l = hls.l;
-    double s = hls.s;
-
-    if (!std::isfinite(h) ||
-        !std::isfinite(l) ||
-        !std::isfinite(s)) {
-        r = 0.0;
-        g = 0.0;
-        b = 0.0;
-        return;
-    }
-
-    double m2;
-    if(l < 0.5){
-        m2 = l * (1.0 + s);
-    } else {
-        m2 = l + s - l * s;
-    }
-
-    if(s < 1e-9){
-        if(h == -1.0 || std::isnan(h)){
-            r = 0.0;
-            g = 0.0;
-            b = 0.0;
-            return;
-        } else {
-            r = l * 255.0;
-            g = l * 255.0;
-            b = l * 255.0;
-            return;
-        }
-
-    } else {
-        double m1 = 2.0 * l - m2;
-        r = Value(h + 120.0, m1, m2) * 255.0;
-        g = Value(h, m1, m2) * 255.0;
-        b = Value(h - 120.0, m1, m2) * 255.0;
-    }
-}
-
-// RGB -> XYZ
-
-static double rgbxyzF(double x){
-    if(x >= 0.04045){
-        return std::pow( ((x + 0.055)/1.055), 2.4 );
-    }
-    return x/12.92;
-}
-
-ColorConverter::Xyz
-ColorConverter::rgbToXyz(
-    double r,
-    double g,
-    double b
-    ) const
-{
-    if (!std::isfinite(r) ||
-        !std::isfinite(g) ||
-        !std::isfinite(b)) {
-        return Xyz{0.0, 0.0, 0.0};
-    }
-
-    double Rn = rgbxyzF(r/255) * 100;
-    double Gn = rgbxyzF(g/255) * 100;
-    double Bn = rgbxyzF(b/255) * 100;
-
-    Xyz xyz;
-
-    xyz.x = 0.412453 * Rn + 0.357580 * Gn + 0.180423 * Bn;
-    xyz.y = 0.212671 * Rn + 0.715160 * Gn + 0.072169 * Bn;
-    xyz.z = 0.019334 * Rn + 0.119193 * Gn + 0.950227 * Bn;
-
-    return xyz;
-}
-
-// XYZ -> RGB
-static double xyzrgbF(double x){
-    if (!std::isfinite(x)) {
-        return x;
-    }
-
-    if(x >= 0.0031308){
-        return 1.055 * std::pow(x, 1.0/2.4) - 0.055;
-    }
-    return 12.92 * x;
-}
-
-void ColorConverter::xyzToRgb(
-    const Xyz &xyz,
-    double &r,
-    double &g,
-    double &b
-    ) const
-{
-    double x = xyz.x;
-    double y = xyz.y;
-    double z = xyz.z;
-
-    double Rn =  3.2406 * (x/100) - 1.5372 * (y/100) - 0.4986 * (z/100);
-    double Gn = -0.9689 * (x/100) + 1.8758 * (y/100) + 0.0415 * (z/100);
-    double Bn =  0.0557 * (x/100) - 0.2040 * (y/100) + 1.0570 * (z/100);
-
-    r = xyzrgbF(Rn) * 255;
-    g = xyzrgbF(Gn) * 255;
-    b = xyzrgbF(Bn) * 255;
-}
-
-// XYZ -> LAB
-static double xyzlabF(double x){
-    if(x >= 0.008856){
-        return std::pow(x, 1.0/3.0);
-    }
-    return 7.787 * x + 16.0/116.0;
-}
-
-ColorConverter::Lab
-ColorConverter::xyzToLab(
-    const Xyz &xyz
-    ) const
-{
-    Lab lab;
-
-    double x = xyz.x;
-    double y = xyz.y;
-    double z = xyz.z;
-
-    const double Xw = 95.047;
-    const double Yw = 100.0;
-    const double Zw = 108.883;
-
-    lab.l = 116.0 * xyzlabF(y/Yw) - 16;
-    lab.a = 500.0 * (xyzlabF(x/Xw) - xyzlabF(y/Yw));
-    lab.b = 200.0 * (xyzlabF(y/Yw) - xyzlabF(z/Zw));
-
-    return lab;
-}
-
-// LAB -> XYZ
-static double labxyzF(double x){
-    double xCube = x * x * x;
-    if(xCube >= 0.008856){
-        return xCube;
-    }
-    return (x - 16.0/116.0) / 7.787;
-}
-
-ColorConverter::Xyz
-ColorConverter::labToXyz(
-    const Lab &lab
-    ) const
-{
-    Xyz xyz;
-
-    double l = lab.l;
-    double a = lab.a;
-    double b = lab.b;
-
-    const double Xw = 95.047;
-    const double Yw = 100.0;
-    const double Zw = 108.883;
-
-    xyz.y = labxyzF((l + 16.0)/116.0) * Yw;
-    xyz.x = labxyzF(a/500 + (l + 16.0)/116.0) * Xw;
-    xyz.z = labxyzF((l + 16.0)/116.0 - b/200.0) * Zw;
-
-    return xyz;
 }

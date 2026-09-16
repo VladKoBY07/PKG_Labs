@@ -247,6 +247,30 @@ colorconverter.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ColorConverter.dir\build.make CMakeFiles/ColorConverter.dir/colorconverter.cpp.s
 .PHONY : colorconverter.cpp.s
 
+colormath.obj: colormath.cpp.obj
+.PHONY : colormath.obj
+
+# target to build an object file
+colormath.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ColorConverter.dir\build.make CMakeFiles/ColorConverter.dir/colormath.cpp.obj
+.PHONY : colormath.cpp.obj
+
+colormath.i: colormath.cpp.i
+.PHONY : colormath.i
+
+# target to preprocess a source file
+colormath.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ColorConverter.dir\build.make CMakeFiles/ColorConverter.dir/colormath.cpp.i
+.PHONY : colormath.cpp.i
+
+colormath.s: colormath.cpp.s
+.PHONY : colormath.s
+
+# target to generate assembly for a file
+colormath.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ColorConverter.dir\build.make CMakeFiles/ColorConverter.dir/colormath.cpp.s
+.PHONY : colormath.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -292,6 +316,9 @@ help:
 	@echo ... colorconverter.obj
 	@echo ... colorconverter.i
 	@echo ... colorconverter.s
+	@echo ... colormath.obj
+	@echo ... colormath.i
+	@echo ... colormath.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

@@ -1,5 +1,6 @@
 C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Debug/ColorConverter_autogen/EWIEGA46WW/moc_colorconverter.cpp: C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colorconverter.h \
   C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Debug/ColorConverter_autogen/moc_predefs.h \
+  C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.h \
   D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/q17memory.h \
   D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/q20bit.h \
   D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/q20functional.h \

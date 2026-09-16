@@ -3,6 +3,7 @@ C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colorconve
  mmc:Q_OBJECT
  mdp:C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Debug/ColorConverter_autogen/moc_predefs.h
  mdp:C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colorconverter.h
+ mdp:C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.h
  mdp:D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/q17memory.h
  mdp:D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/q20bit.h
  mdp:D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/q20functional.h
@@ -381,3 +382,5 @@ C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colorconve
 C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colorconverter.cpp
  uic:ui_colorconverter.h
 C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/main.cpp
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.h
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.cpp

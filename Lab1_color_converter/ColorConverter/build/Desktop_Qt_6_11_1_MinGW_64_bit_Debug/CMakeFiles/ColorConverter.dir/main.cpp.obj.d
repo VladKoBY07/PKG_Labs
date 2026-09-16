@@ -386,6 +386,7 @@ CMakeFiles/ColorConverter.dir/main.cpp.obj: \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtGui/qcursor.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtGui/qbitmap.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtWidgets/qtabwidget.h \
+ C:\Users\Asus_Vlad\Repos\PKG_Labs\Lab1_color_converter\ColorConverter\colormath.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtWidgets/QApplication \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtWidgets/qapplication.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/qcoreapplication.h \

@@ -6,6 +6,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ColorConverter.dir/ColorConverter_autogen/mocs_compilation.cpp.obj.d"
   "CMakeFiles/ColorConverter.dir/colorconverter.cpp.obj"
   "CMakeFiles/ColorConverter.dir/colorconverter.cpp.obj.d"
+  "CMakeFiles/ColorConverter.dir/colormath.cpp.obj"
+  "CMakeFiles/ColorConverter.dir/colormath.cpp.obj.d"
   "CMakeFiles/ColorConverter.dir/main.cpp.obj"
   "CMakeFiles/ColorConverter.dir/main.cpp.obj.d"
   "ColorConverter.exe"

@@ -387,6 +387,7 @@ CMakeFiles/ColorConverter.dir/ColorConverter_autogen/mocs_compilation.cpp.obj: \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtGui/qcursor.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtGui/qbitmap.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtWidgets/qtabwidget.h \
+ C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/qtmochelpers.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/qtmocconstants.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/q20algorithm.h
