@@ -1,3 +1,0 @@
-D:\Programs\Qt_framework\Tools\CMake_64\bin\cmake.exe -E rm -f CMakeFiles\ColorConverter.dir/objects.a
-D:\Programs\Qt_framework\Tools\mingw1310_64\bin\ar.exe qc CMakeFiles\ColorConverter.dir/objects.a @CMakeFiles\ColorConverter.dir\objects1.rsp
-D:\Programs\Qt_framework\Tools\mingw1310_64\bin\g++.exe -g -mwindows -Wl,--whole-archive CMakeFiles\ColorConverter.dir/objects.a -Wl,--no-whole-archive -o ColorConverter.exe -Wl,--out-implib,libColorConverter.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ColorConverter.dir\linkLibs.rsp
