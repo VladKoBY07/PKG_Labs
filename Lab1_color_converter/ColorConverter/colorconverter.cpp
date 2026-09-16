@@ -1310,6 +1310,8 @@ ColorConverter::rgbToHls(
     return hls;
 }
 
+// HLS -> RGB
+
 double Value(double hue, double m1, double m2){
     while (hue < 0.0)
         hue += 360.0;
@@ -1362,6 +1364,15 @@ void ColorConverter::hlsToRgb(
     }
 }
 
+// RGB -> XYZ
+
+double rgbxyzF(double x){
+    if(x >= 0.04045){
+        return std::pow( ((x + 0.055)/1.055), 2.4 );
+    }
+    return x/12.92;
+}
+
 ColorConverter::Xyz
 ColorConverter::rgbToXyz(
     double r,
@@ -1369,12 +1380,20 @@ ColorConverter::rgbToXyz(
     double b
     ) const
 {
+    double Rn = rgbxyzF(r/255) * 100;
+    double Gn = rgbxyzF(g/255) * 100;
+    double Bn = rgbxyzF(b/255) * 100;
+
     Xyz xyz;
 
-    // TODO
+    xyz.x = 0.412453 * Rn + 0.357580 * Gn + 0.180423 * Bn;
+    xyz.y = 0.212671 * Rn + 0.715160 * Gn + 0.072169 * Bn;
+    xyz.z = 0.019334 * Rn + 0.119193 * Gn + 0.950227 * Bn;
 
     return xyz;
 }
+
+// XYZ -> RGB
 
 void ColorConverter::xyzToRgb(
     const Xyz &xyz,
@@ -1385,6 +1404,8 @@ void ColorConverter::xyzToRgb(
 {
     // TODO
 }
+
+// XYZ -> LAB
 
 ColorConverter::Lab
 ColorConverter::xyzToLab(
@@ -1397,6 +1418,8 @@ ColorConverter::xyzToLab(
 
     return lab;
 }
+
+// LAB -> XYZ
 
 ColorConverter::Xyz
 ColorConverter::labToXyz(
