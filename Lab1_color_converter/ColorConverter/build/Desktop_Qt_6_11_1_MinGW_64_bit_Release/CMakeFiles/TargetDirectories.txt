@@ -1,0 +1,9 @@
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/ColorConverter.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/edit_cache.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/rebuild_cache.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/list_install_components.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/install.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/install/local.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/install/strip.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/ColorConverter_autogen_timestamp_deps.dir
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/build/Desktop_Qt_6_11_1_MinGW_64_bit_Release/CMakeFiles/ColorConverter_autogen.dir

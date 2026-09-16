@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+c9f0a12f6853b0d937d1a1bdc3f6a58b CMakeFiles/ColorConverter_autogen
+68f4130c5fd66b729241ce8134a4b793 ColorConverter_autogen/timestamp

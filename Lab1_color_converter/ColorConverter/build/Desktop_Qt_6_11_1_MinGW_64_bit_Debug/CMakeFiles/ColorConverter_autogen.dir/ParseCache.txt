@@ -379,8 +379,8 @@ C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colorconve
  mdp:D:/Programs/Qt_framework/Tools/mingw1310_64/x86_64-w64-mingw32/include/time.h
  mdp:D:/Programs/Qt_framework/Tools/mingw1310_64/x86_64-w64-mingw32/include/vadefs.h
  mdp:D:/Programs/Qt_framework/Tools/mingw1310_64/x86_64-w64-mingw32/include/wchar.h
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.h
+C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/main.cpp
 C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colorconverter.cpp
  uic:ui_colorconverter.h
-C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/main.cpp
-C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.h
 C:/Users/Asus_Vlad/Repos/PKG_Labs/Lab1_color_converter/ColorConverter/colormath.cpp

@@ -458,4 +458,7 @@ CMakeFiles/ColorConverter.dir/colorconverter.cpp.obj: \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtGui/qtextoption.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtGui/qpen.h \
  D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/QSignalBlocker \
- D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtWidgets/QSlider
+ D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtWidgets/QSlider \
+ D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/QRect \
+ D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtCore/QPoint \
+ D:/Programs/Qt_framework/6.11.1/mingw_64/include/QtGui/QPen
