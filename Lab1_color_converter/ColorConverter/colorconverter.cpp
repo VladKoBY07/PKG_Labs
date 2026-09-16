@@ -1394,6 +1394,12 @@ ColorConverter::rgbToXyz(
 }
 
 // XYZ -> RGB
+double xyzrgbF(double x){
+    if(x >= 0.0031308){
+        return 1.055 * std::pow(x, 1/2.4) - 0.055;
+    }
+    return 12.92 * x;
+}
 
 void ColorConverter::xyzToRgb(
     const Xyz &xyz,
@@ -1402,7 +1408,17 @@ void ColorConverter::xyzToRgb(
     double &b
     ) const
 {
-    // TODO
+    double x = xyz.x;
+    double y = xyz.y;
+    double z = xyz.z;
+
+    double Rn =  3.2406 * (x/100) - 1.5372 * (y/100) - 0.4986 * (z/100);
+    double Gn = -0.9689 * (x/100) + 1.8758 * (y/100) + 0.0415 * (z/100);
+    double Bn =  0.0557 * (x/100) - 0.2040 * (y/100) + 1.0570 * (z/100);
+
+    r = xyzrgbF(Rn) * 255;
+    g = xyzrgbF(Gn) * 255;
+    b = xyzrgbF(Bn) * 255;
 }
 
 // XYZ -> LAB
