@@ -1227,22 +1227,9 @@ ColorConverter::rgbToDisplayHls(
     bool &outOfGamut
     ) const
 {
-    outOfGamut =
-        !isRgbInGamut(
-            r,
-            g,
-            b
-            );
+    outOfGamut = !isRgbInGamut(r, g, b);
 
-    if (outOfGamut) {
-        return m_currentHls;
-    }
-
-    return rgbToHls(
-        r,
-        g,
-        b
-        );
+    return rgbToHls(r, g, b);
 }
 
 ColorConverter::Hls
@@ -1312,7 +1299,7 @@ ColorConverter::rgbToHls(
 
 // HLS -> RGB
 
-double Value(double hue, double m1, double m2){
+static double Value(double hue, double m1, double m2){
     while (hue < 0.0)
         hue += 360.0;
     while (hue >= 360.0)
@@ -1341,6 +1328,15 @@ void ColorConverter::hlsToRgb(
     double l = hls.l;
     double s = hls.s;
 
+    if (!std::isfinite(h) ||
+        !std::isfinite(l) ||
+        !std::isfinite(s)) {
+        r = 0.0;
+        g = 0.0;
+        b = 0.0;
+        return;
+    }
+
     double m2;
     if(l < 0.5){
         m2 = l * (1.0 + s);
@@ -1350,23 +1346,28 @@ void ColorConverter::hlsToRgb(
 
     if(s < 1e-9){
         if(h == -1.0 || std::isnan(h)){
-            throw std::runtime_error("Ошибка: H = ndf!");
+            r = 0.0;
+            g = 0.0;
+            b = 0.0;
+            return;
         } else {
-            r = l;
-            g = l;
-            b = l;
+            r = l * 255.0;
+            g = l * 255.0;
+            b = l * 255.0;
+            return;
         }
+
     } else {
         double m1 = 2.0 * l - m2;
-        r = Value(h + 120.0, m1, m2);
-        g = Value(h, m1, m2);
-        b = Value(h - 120.0, m1, m2);
+        r = Value(h + 120.0, m1, m2) * 255.0;
+        g = Value(h, m1, m2) * 255.0;
+        b = Value(h - 120.0, m1, m2) * 255.0;
     }
 }
 
 // RGB -> XYZ
 
-double rgbxyzF(double x){
+static double rgbxyzF(double x){
     if(x >= 0.04045){
         return std::pow( ((x + 0.055)/1.055), 2.4 );
     }
@@ -1380,6 +1381,12 @@ ColorConverter::rgbToXyz(
     double b
     ) const
 {
+    if (!std::isfinite(r) ||
+        !std::isfinite(g) ||
+        !std::isfinite(b)) {
+        return Xyz{0.0, 0.0, 0.0};
+    }
+
     double Rn = rgbxyzF(r/255) * 100;
     double Gn = rgbxyzF(g/255) * 100;
     double Bn = rgbxyzF(b/255) * 100;
@@ -1394,9 +1401,13 @@ ColorConverter::rgbToXyz(
 }
 
 // XYZ -> RGB
-double xyzrgbF(double x){
+static double xyzrgbF(double x){
+    if (!std::isfinite(x)) {
+        return x;
+    }
+
     if(x >= 0.0031308){
-        return 1.055 * std::pow(x, 1/2.4) - 0.055;
+        return 1.055 * std::pow(x, 1.0/2.4) - 0.055;
     }
     return 12.92 * x;
 }
@@ -1422,7 +1433,7 @@ void ColorConverter::xyzToRgb(
 }
 
 // XYZ -> LAB
-double xyzlabF(double x){
+static double xyzlabF(double x){
     if(x >= 0.008856){
         return std::pow(x, 1.0/3.0);
     }
@@ -1452,8 +1463,8 @@ ColorConverter::xyzToLab(
 }
 
 // LAB -> XYZ
-double labxyzF(double x){
-    double xCube = std::pow(x, 3.0);
+static double labxyzF(double x){
+    double xCube = x * x * x;
     if(xCube >= 0.008856){
         return xCube;
     }
