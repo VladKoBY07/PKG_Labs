@@ -1310,6 +1310,24 @@ ColorConverter::rgbToHls(
     return hls;
 }
 
+double Value(double hue, double m1, double m2){
+    while (hue < 0.0)
+        hue += 360.0;
+    while (hue >= 360.0)
+        hue -= 360.0;
+
+    if(hue < 60.0){
+        return m1 + (m2 - m1) * hue / 60.0;
+    }
+    if(hue < 180.0){
+        return m2;
+    }
+    if(hue < 240.0){
+        return m1 + (m2 - m1)*(240.0 - hue) / 60;
+    }
+    return m1;
+}
+
 void ColorConverter::hlsToRgb(
     const Hls &hls,
     double &r,
@@ -1317,7 +1335,31 @@ void ColorConverter::hlsToRgb(
     double &b
     ) const
 {
-    // TODO
+    double h = hls.h;
+    double l = hls.l;
+    double s = hls.s;
+
+    double m2;
+    if(l < 0.5){
+        m2 = l * (1.0 + s);
+    } else {
+        m2 = l + s - l * s;
+    }
+
+    if(s < 1e-9){
+        if(h == -1.0 || std::isnan(h)){
+            throw std::runtime_error("Ошибка: H = ndf!");
+        } else {
+            r = l;
+            g = l;
+            b = l;
+        }
+    } else {
+        double m1 = 2.0 * l - m2;
+        r = Value(h + 120.0, m1, m2);
+        g = Value(h, m1, m2);
+        b = Value(h - 120.0, m1, m2);
+    }
 }
 
 ColorConverter::Xyz
