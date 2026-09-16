@@ -1452,6 +1452,13 @@ ColorConverter::xyzToLab(
 }
 
 // LAB -> XYZ
+double labxyzF(double x){
+    double xCube = std::pow(x, 3.0);
+    if(xCube >= 0.008856){
+        return xCube;
+    }
+    return (x - 16.0/116.0) / 7.787;
+}
 
 ColorConverter::Xyz
 ColorConverter::labToXyz(
@@ -1460,7 +1467,17 @@ ColorConverter::labToXyz(
 {
     Xyz xyz;
 
-    // TODO
+    double l = lab.l;
+    double a = lab.a;
+    double b = lab.b;
+
+    const double Xw = 95.047;
+    const double Yw = 100.0;
+    const double Zw = 108.883;
+
+    xyz.y = labxyzF((l + 16.0)/116.0) * Yw;
+    xyz.x = labxyzF(a/500 + (l + 16.0)/116.0) * Xw;
+    xyz.z = labxyzF((l + 16.0)/116.0 - b/200.0) * Zw;
 
     return xyz;
 }
