@@ -20,7 +20,7 @@ ColorConverter::ColorConverter(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::ColorConverter)
     , m_updating(false)
-    , m_currentHls{0.0, 0.5, 1.0}
+    , m_currentHls{180, 0.5, 1.0}
 {
     ui->setupUi(this);
 
@@ -28,7 +28,7 @@ ColorConverter::ColorConverter(QWidget *parent)
     setupConnections();
 
     Hls hls;
-    hls.h = 0.0;
+    hls.h = 180;
     hls.l = 0.5;
     hls.s = 1.0;
 
@@ -70,49 +70,49 @@ void ColorConverter::setupControls()
 
     // HLS
     ui->hSpinBox->setRange(0.0, 360.0);
-    ui->hSpinBox->setDecimals(2);
+    ui->hSpinBox->setDecimals(0);
     ui->hSpinBox->setSingleStep(1.0);
     ui->hSpinBox->setKeyboardTracking(false);
 
     ui->lSpinBox->setRange(0.0, 100.0);
-    ui->lSpinBox->setDecimals(2);
+    ui->lSpinBox->setDecimals(0);
     ui->lSpinBox->setSingleStep(1.0);
     ui->lSpinBox->setKeyboardTracking(false);
 
     ui->sSpinBox->setRange(0.0, 100.0);
-    ui->sSpinBox->setDecimals(2);
+    ui->sSpinBox->setDecimals(0);
     ui->sSpinBox->setSingleStep(1.0);
     ui->sSpinBox->setKeyboardTracking(false);
 
     // XYZ
     ui->xSpinBox->setRange(0.0, 100.0);
-    ui->xSpinBox->setDecimals(4);
+    ui->xSpinBox->setDecimals(0);
     ui->xSpinBox->setSingleStep(0.1);
     ui->xSpinBox->setKeyboardTracking(false);
 
     ui->ySpinBox->setRange(0.0, 100.0);
-    ui->ySpinBox->setDecimals(4);
+    ui->ySpinBox->setDecimals(0);
     ui->ySpinBox->setSingleStep(0.1);
     ui->ySpinBox->setKeyboardTracking(false);
 
     ui->zSpinBox->setRange(0.0, 100.0);
-    ui->zSpinBox->setDecimals(4);
+    ui->zSpinBox->setDecimals(0);
     ui->zSpinBox->setSingleStep(0.1);
     ui->zSpinBox->setKeyboardTracking(false);
 
     // LAB
     ui->labLSpinBox->setRange(0.0, 100.0);
-    ui->labLSpinBox->setDecimals(2);
+    ui->labLSpinBox->setDecimals(0);
     ui->labLSpinBox->setSingleStep(1.0);
     ui->labLSpinBox->setKeyboardTracking(false);
 
     ui->aSpinBox->setRange(-200.0, 200.0);
-    ui->aSpinBox->setDecimals(2);
+    ui->aSpinBox->setDecimals(0);
     ui->aSpinBox->setSingleStep(1.0);
     ui->aSpinBox->setKeyboardTracking(false);
 
     ui->labBSpinBox->setRange(-200.0, 200.0);
-    ui->labBSpinBox->setDecimals(2);
+    ui->labBSpinBox->setDecimals(0);
     ui->labBSpinBox->setSingleStep(1.0);
     ui->labBSpinBox->setKeyboardTracking(false);
 
