@@ -116,6 +116,16 @@ void ColorConverter::setupControls()
     ui->labBSpinBox->setSingleStep(1.0);
     ui->labBSpinBox->setKeyboardTracking(false);
 
+    // Saturation
+    ui->saturationSlider->setRange(0, 100);
+    ui->saturationSlider->setValue(100);
+
+    ui->saturationSpinBox->setRange(0.0, 100.0);
+    ui->saturationSpinBox->setDecimals(0);
+    ui->saturationSpinBox->setSingleStep(1.0);
+    ui->saturationSpinBox->setKeyboardTracking(false);
+    ui->saturationSpinBox->setValue(100.0);
+
     ui->colorPreview->setMinimumSize(220, 180);
 
     ui->colorPreview->setStyleSheet(
@@ -223,6 +233,17 @@ void ColorConverter::setupConnections()
         ui->labBSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
         this, &ColorConverter::onLabSpinBoxChanged
         );
+
+    // Saturation
+    connect(
+        ui->saturationSlider, &QSlider::valueChanged,
+        this, &ColorConverter::onSaturationSliderChanged
+        );
+
+    connect(
+        ui->saturationSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        this, &ColorConverter::onSaturationSpinBoxChanged
+        );
 }
 
 bool ColorConverter::eventFilter(QObject *watched, QEvent *event)
@@ -254,7 +275,7 @@ bool ColorConverter::eventFilter(QObject *watched, QEvent *event)
                 Hls hls;
                 hls.h = hue;
                 hls.l = lightness;
-                hls.s = 1.0;
+                hls.s = saturationFromControls();
 
                 double r = 0.0;
                 double g = 0.0;
@@ -341,7 +362,7 @@ bool ColorConverter::eventFilter(QObject *watched, QEvent *event)
         Hls hls;
         hls.h = hue;
         hls.l = lightness;
-        hls.s = 1.0;
+        hls.s = saturationFromControls();
 
         double r = 0.0;
         double g = 0.0;
@@ -504,6 +525,143 @@ void ColorConverter::onLabSpinBoxChanged()
     updateAllColors(hls, xyz, lab, outOfGamut);
 }
 
+void ColorConverter::onSaturationSliderChanged(int value)
+{
+    if (m_updating) {
+        return;
+    }
+
+    const double saturation =
+        value / 100.0;
+
+    Hls hls;
+
+    hls.h = m_currentHls.h;
+    hls.l = m_currentHls.l;
+    hls.s = saturation;
+
+    double r = 0.0;
+    double g = 0.0;
+    double b = 0.0;
+
+    hlsToRgb(
+        hls,
+        r,
+        g,
+        b
+        );
+
+    const Xyz xyz =
+        rgbToXyz(
+            r,
+            g,
+            b
+            );
+
+    const Lab lab =
+        xyzToLab(
+            xyz
+            );
+
+    const bool outOfGamut =
+        !isRgbInGamut(
+            r,
+            g,
+            b
+            );
+
+    updateAllColors(
+        hls,
+        xyz,
+        lab,
+        outOfGamut
+        );
+}
+
+void ColorConverter::onSaturationSpinBoxChanged(double value)
+{
+    if (m_updating) {
+        return;
+    }
+
+    Hls hls;
+
+    hls.h = m_currentHls.h;
+    hls.l = m_currentHls.l;
+    hls.s = value / 100.0;
+
+    double r = 0.0;
+    double g = 0.0;
+    double b = 0.0;
+
+    hlsToRgb(
+        hls,
+        r,
+        g,
+        b
+        );
+
+    const Xyz xyz =
+        rgbToXyz(
+            r,
+            g,
+            b
+            );
+
+    const Lab lab =
+        xyzToLab(
+            xyz
+            );
+
+    const bool outOfGamut =
+        !isRgbInGamut(
+            r,
+            g,
+            b
+            );
+
+    updateAllColors(
+        hls,
+        xyz,
+        lab,
+        outOfGamut
+        );
+}
+
+void ColorConverter::setSaturationControl(
+    double saturation
+    )
+{
+    if (!std::isfinite(saturation) ||
+        saturation < 0.0 ||
+        saturation > 1.0) {
+        return;
+    }
+
+    const int value =
+        static_cast<int>(
+            std::round(
+                saturation * 100.0
+                )
+            );
+
+    const QSignalBlocker sliderBlocker(
+        ui->saturationSlider
+        );
+
+    const QSignalBlocker spinBoxBlocker(
+        ui->saturationSpinBox
+        );
+
+    ui->saturationSlider->setValue(value);
+    ui->saturationSpinBox->setValue(value);
+}
+
+double ColorConverter::saturationFromControls() const
+{
+    return ui->saturationSpinBox->value() / 100.0;
+}
+
 void ColorConverter::updateAllColors(
     const Hls &hls,
     const Xyz &xyz,
@@ -512,6 +670,7 @@ void ColorConverter::updateAllColors(
     )
 {
     m_updating = true;
+
     m_currentHls = hls;
 
     QColor color;
@@ -522,10 +681,17 @@ void ColorConverter::updateAllColors(
         color = hlsToQColor(hls);
     }
 
-    updatePreview(color, outOfGamut);
+    updatePreview(
+        color,
+        outOfGamut
+        );
+
     setHlsControls(hls);
     setXyzControls(xyz);
     setLabControls(lab);
+
+    setSaturationControl(hls.s);
+
     updateColorMap();
 
     m_updating = false;

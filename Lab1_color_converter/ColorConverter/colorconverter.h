@@ -30,10 +30,15 @@ protected:
 private slots:
     void onHlsSliderChanged();
     void onHlsSpinBoxChanged();
+
     void onXyzSliderChanged();
     void onXyzSpinBoxChanged();
+
     void onLabSliderChanged();
     void onLabSpinBoxChanged();
+
+    void onSaturationSliderChanged(int value);
+    void onSaturationSpinBoxChanged(double value);
 
 private:
     void setupControls();
@@ -47,6 +52,10 @@ private:
     void setHlsControls(const Hls &hls);
     void setXyzControls(const Xyz &xyz);
     void setLabControls(const Lab &lab);
+
+    void setSaturationControl(double saturation);
+    double saturationFromControls() const;
+
     Hls hlsFromControls() const;
     Xyz xyzFromControls() const;
     Lab labFromControls() const;
