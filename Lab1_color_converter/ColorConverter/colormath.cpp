@@ -3,6 +3,75 @@
 #include <algorithm>
 #include <cmath>
 
+// XYZ -> LAB
+
+static double xyzlabF(double x)
+{
+    if (x >= 0.008856) {
+        return std::pow(x, 1.0 / 3.0);
+    }
+    return 7.787 * x + 16.0 / 116.0;
+}
+
+Lab xyzToLab(const Xyz &xyz)
+{
+    Lab lab;
+
+    double x = xyz.x;
+    double y = xyz.y;
+    double z = xyz.z;
+
+    const double Xw = 95.047;
+    const double Yw = 100.0;
+    const double Zw = 108.883;
+
+    lab.l = 116.0 * xyzlabF(y / Yw) - 16;
+    lab.a = 500.0 * (xyzlabF(x / Xw) - xyzlabF(y / Yw));
+    lab.b = 200.0 * (xyzlabF(y / Yw) - xyzlabF(z / Zw));
+
+    return lab;
+}
+
+// LAB -> XYZ
+
+static double labxyzF(double x)
+{
+    double xCube = x * x * x;
+    if (xCube >= 0.008856) {
+        return xCube;
+    }
+    return (x - 16.0 / 116.0) / 7.787;
+}
+
+Xyz labToXyz(const Lab &lab)
+{
+    Xyz xyz;
+
+    double l = lab.l;
+    double a = lab.a;
+    double b = lab.b;
+
+    const double Xw = 95.047;
+    const double Yw = 100.0;
+    const double Zw = 108.883;
+
+    xyz.y = labxyzF((l + 16.0) / 116.0) * Yw;
+    xyz.x = labxyzF(a / 500 + (l + 16.0) / 116.0) * Xw;
+    xyz.z = labxyzF((l + 16.0) / 116.0 - b / 200.0) * Zw;
+
+    return xyz;
+}
+
+bool isRgbInGamut(double r, double g, double b)
+{
+    constexpr double epsilon = 1e-9;
+
+    return std::isfinite(r) && std::isfinite(g) && std::isfinite(b) &&
+           r >= -epsilon && r <= 255.0 + epsilon &&
+           g >= -epsilon && g <= 255.0 + epsilon &&
+           b >= -epsilon && b <= 255.0 + epsilon;
+}
+
 static double Value(double hue, double m1, double m2)
 {
     while (hue < 0.0)
@@ -157,73 +226,4 @@ void xyzToRgb(const Xyz &xyz, double &r, double &g, double &b)
     r = xyzrgbF(Rn) * 255;
     g = xyzrgbF(Gn) * 255;
     b = xyzrgbF(Bn) * 255;
-}
-
-// XYZ -> LAB
-
-static double xyzlabF(double x)
-{
-    if (x >= 0.008856) {
-        return std::pow(x, 1.0 / 3.0);
-    }
-    return 7.787 * x + 16.0 / 116.0;
-}
-
-Lab xyzToLab(const Xyz &xyz)
-{
-    Lab lab;
-
-    double x = xyz.x;
-    double y = xyz.y;
-    double z = xyz.z;
-
-    const double Xw = 95.047;
-    const double Yw = 100.0;
-    const double Zw = 108.883;
-
-    lab.l = 116.0 * xyzlabF(y / Yw) - 16;
-    lab.a = 500.0 * (xyzlabF(x / Xw) - xyzlabF(y / Yw));
-    lab.b = 200.0 * (xyzlabF(y / Yw) - xyzlabF(z / Zw));
-
-    return lab;
-}
-
-// LAB -> XYZ
-
-static double labxyzF(double x)
-{
-    double xCube = x * x * x;
-    if (xCube >= 0.008856) {
-        return xCube;
-    }
-    return (x - 16.0 / 116.0) / 7.787;
-}
-
-Xyz labToXyz(const Lab &lab)
-{
-    Xyz xyz;
-
-    double l = lab.l;
-    double a = lab.a;
-    double b = lab.b;
-
-    const double Xw = 95.047;
-    const double Yw = 100.0;
-    const double Zw = 108.883;
-
-    xyz.y = labxyzF((l + 16.0) / 116.0) * Yw;
-    xyz.x = labxyzF(a / 500 + (l + 16.0) / 116.0) * Xw;
-    xyz.z = labxyzF((l + 16.0) / 116.0 - b / 200.0) * Zw;
-
-    return xyz;
-}
-
-bool isRgbInGamut(double r, double g, double b)
-{
-    constexpr double epsilon = 1e-9;
-
-    return std::isfinite(r) && std::isfinite(g) && std::isfinite(b) &&
-           r >= -epsilon && r <= 255.0 + epsilon &&
-           g >= -epsilon && g <= 255.0 + epsilon &&
-           b >= -epsilon && b <= 255.0 + epsilon;
 }

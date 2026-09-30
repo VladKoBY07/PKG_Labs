@@ -675,11 +675,7 @@ void ColorConverter::updateAllColors(
 
     QColor color;
 
-    if (outOfGamut) {
-        color = QColor(150, 150, 150);
-    } else {
-        color = hlsToQColor(hls);
-    }
+    color = hlsToQColor(hls);
 
     updatePreview(
         color,
@@ -709,8 +705,8 @@ void ColorConverter::updatePreview(const QColor &color, bool outOfGamut)
 
     if (outOfGamut) {
         ui->gamutWarningLabel->setText(
-            "Цвет находится вне диапазона RGB "
-            "и не может быть отображён точно"
+            "Цвет находится вне диапазона RGB. "
+            "Отображён приближенный цвет"
             );
 
         ui->gamutWarningLabel->setStyleSheet(
@@ -816,7 +812,13 @@ QColor ColorConverter::hlsToQColor(const Hls &hls) const
     hlsToRgb(hls, r, g, b);
 
     if (!isRgbInGamut(r, g, b)) {
-        return QColor(150, 150, 150);
+        r = (r > 255) ? 255 : r;
+        g = (g > 255) ? 255 : g;
+        b = (b > 255) ? 255 : b;
+
+        r = (r < 0) ? 0 : r;
+        g = (g < 0) ? 0 : g;
+        b = (b < 0) ? 0 : b;
     }
 
     return QColor::fromRgb(
