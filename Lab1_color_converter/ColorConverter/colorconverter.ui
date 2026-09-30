@@ -28,15 +28,19 @@
     <property name="spacing">
      <number>12</number>
     </property>
+
     <property name="leftMargin">
      <number>12</number>
     </property>
+
     <property name="topMargin">
      <number>12</number>
     </property>
+
     <property name="rightMargin">
      <number>12</number>
     </property>
+
     <property name="bottomMargin">
      <number>12</number>
     </property>
@@ -165,8 +169,26 @@ font-weight: bold;</string>
               <number>4</number>
              </property>
 
-             <item alignment="Qt::AlignmentFlag::AlignHCenter">
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignHCenter</set>
+             </property>
+
+             <item>
               <widget class="QLabel" name="saturationLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>85</width>
+                 <height>0</height>
+                </size>
+               </property>
+
+               <property name="maximumSize">
+                <size>
+                 <width>85</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+
                <property name="text">
                 <string>Saturation</string>
                </property>
@@ -177,12 +199,19 @@ font-weight: bold;</string>
               </widget>
              </item>
 
-             <item alignment="Qt::AlignmentFlag::AlignHCenter">
+             <item>
               <widget class="QSlider" name="saturationSlider">
                <property name="minimumSize">
                 <size>
                  <width>30</width>
-                 <height>180</height>
+                 <height>220</height>
+                </size>
+               </property>
+
+               <property name="maximumSize">
+                <size>
+                 <width>30</width>
+                 <height>250</height>
                 </size>
                </property>
 
@@ -204,12 +233,19 @@ font-weight: bold;</string>
               </widget>
              </item>
 
-             <item alignment="Qt::AlignmentFlag::AlignHCenter">
+             <item>
               <widget class="QDoubleSpinBox" name="saturationSpinBox">
                <property name="minimumSize">
                 <size>
-                 <width>70</width>
+                 <width>85</width>
                  <height>0</height>
+                </size>
+               </property>
+
+               <property name="maximumSize">
+                <size>
+                 <width>85</width>
+                 <height>16777215</height>
                 </size>
                </property>
 
@@ -275,7 +311,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>H</string>
              </property>
@@ -298,9 +333,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>2</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -317,7 +351,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>L</string>
              </property>
@@ -340,9 +373,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>2</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -359,7 +391,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>S</string>
              </property>
@@ -382,9 +413,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>2</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -396,13 +426,13 @@ font-weight: bold;</string>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -429,7 +459,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>X</string>
              </property>
@@ -452,9 +481,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>4</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -471,7 +499,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>Y</string>
              </property>
@@ -494,9 +521,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>4</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -513,7 +539,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>Z</string>
              </property>
@@ -536,9 +561,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>4</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -583,7 +607,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>L*</string>
              </property>
@@ -606,9 +629,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>2</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -625,7 +647,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>a*</string>
              </property>
@@ -648,9 +669,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>2</number>
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -667,7 +687,6 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="text">
               <string>b*</string>
              </property>
@@ -690,9 +709,8 @@ font-weight: bold;</string>
                <height>0</height>
               </size>
              </property>
-
              <property name="decimals">
-              <number>2</number>
+              <number>0</number>
              </property>
             </widget>
            </item>

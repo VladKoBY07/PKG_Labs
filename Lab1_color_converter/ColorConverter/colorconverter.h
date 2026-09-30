@@ -2,6 +2,7 @@
 #define COLORCONVERTER_H
 
 #include <QMainWindow>
+
 #include "colormath.h"
 
 QT_BEGIN_NAMESPACE
@@ -43,12 +44,35 @@ private slots:
 private:
     void setupControls();
     void setupConnections();
-    void updateAllColors(const Hls &hls, const Xyz &xyz, const Lab &lab, bool outOfGamut);
-    void updatePreview(const QColor &color, bool outOfGamut);
+
+    void updateAllColors(
+        const Hls &hls,
+        const Xyz &xyz,
+        const Lab &lab,
+        bool outOfGamut
+        );
+
+    void updatePreview(
+        const QColor &color,
+        bool outOfGamut
+        );
+
     void updateColorMap();
-    void setCoordinate(QSlider *slider, QDoubleSpinBox *spinBox,
-                       double value, double minimum, double maximum);
-    double coordinateFromSlider(QSlider *slider, double minimum, double maximum) const;
+
+    void setCoordinate(
+        QSlider *slider,
+        QDoubleSpinBox *spinBox,
+        double value,
+        double minimum,
+        double maximum
+        );
+
+    double coordinateFromSlider(
+        QSlider *slider,
+        double minimum,
+        double maximum
+        ) const;
+
     void setHlsControls(const Hls &hls);
     void setXyzControls(const Xyz &xyz);
     void setLabControls(const Lab &lab);
@@ -59,12 +83,16 @@ private:
     Hls hlsFromControls() const;
     Xyz xyzFromControls() const;
     Lab labFromControls() const;
+
     QColor hlsToQColor(const Hls &hls) const;
 
 private:
     Ui::ColorConverter *ui;
     bool m_updating;
+
     Hls m_currentHls;
+    Xyz m_currentXyz;
+    Lab m_currentLab;
 };
 
 #endif // COLORCONVERTER_H

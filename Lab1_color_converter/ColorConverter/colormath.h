@@ -22,12 +22,52 @@ struct Lab
     double b;
 };
 
-Hls rgbToHls(double r, double g, double b);
-void hlsToRgb(const Hls &hls, double &r, double &g, double &b);
-Xyz rgbToXyz(double r, double g, double b);
-void xyzToRgb(const Xyz &xyz, double &r, double &g, double &b);
-Lab xyzToLab(const Xyz &xyz);
-Xyz labToXyz(const Lab &lab);
-bool isRgbInGamut(double r, double g, double b);
+Hls rgbToHls(
+    double r,
+    double g,
+    double b
+    );
+
+void hlsToRgb(
+    const Hls &hls,
+    double &r,
+    double &g,
+    double &b
+    );
+
+Xyz rgbToXyz(
+    double r,
+    double g,
+    double b
+    );
+
+void xyzToRgb(
+    const Xyz &xyz,
+    double &r,
+    double &g,
+    double &b
+    );
+
+Lab xyzToLab(
+    const Xyz &xyz
+    );
+
+Xyz labToXyz(
+    const Lab &lab
+    );
+
+bool isRgbInGamut(
+    double r,
+    double g,
+    double b
+    );
+
+Hls rgbToDisplayHls(
+    double r,
+    double g,
+    double b,
+    bool &outOfGamut,
+    const Hls &fallback
+    );
 
 #endif // COLORMATH_H

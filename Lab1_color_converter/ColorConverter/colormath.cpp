@@ -227,3 +227,29 @@ void xyzToRgb(const Xyz &xyz, double &r, double &g, double &b)
     g = xyzrgbF(Gn) * 255;
     b = xyzrgbF(Bn) * 255;
 }
+
+Hls rgbToDisplayHls(
+    double r,
+    double g,
+    double b,
+    bool &outOfGamut,
+    const Hls &fallback
+    )
+{
+    outOfGamut =
+        !isRgbInGamut(
+            r,
+            g,
+            b
+            );
+
+    if (outOfGamut) {
+        return fallback;
+    }
+
+    return rgbToHls(
+        r,
+        g,
+        b
+        );
+}
